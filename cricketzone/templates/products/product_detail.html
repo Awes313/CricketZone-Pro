@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} – CricketZone{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container-fluid px-4 px-lg-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cz-breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item">
+          {% if product.category == 'bat' %}
+            <a href="{{ url_for('products.bats') }}">Bats</a>
+          {% elif product.category == 'ball' %}
+            <a href="{{ url_for('products.balls') }}">Balls</a>
+          {% else %}
+            <a href="{{ url_for('products.kits') }}">Kits</a>
+          {% endif %}
+        </li>
+        <li class="breadcrumb-item active">{{ product.name }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container-fluid px-4 px-lg-5 py-4">
+
+  <!-- Back Button -->
+  <div class="mb-4">
+    <a href="javascript:history.back()" class="btn btn-back">
+      <i class="bi bi-arrow-left me-2"></i>Go Back
+    </a>
+  </div>
+
+  <div class="row g-5">
+
+    <!-- Image -->
+    <div class="col-lg-5">
+      <div class="detail-img-card">
+        {% if product.stock == 0 %}
+          <div class="detail-stock-badge out">
+            <i class="bi bi-x-circle-fill me-1"></i>Out of Stock
+          </div>
+        {% elif product.stock <= 5 %}
+          <div class="detail-stock-badge low">
+            <i class="bi bi-fire me-1"></i>Only {{ product.stock }} left!
+          </div>
+        {% endif %}
+
+        <img src="{{ url_for('static', filename='images/' + product.image) }}"
+             alt="{{ product.name }}"
+             class="detail-main-img" id="detailMainImg"
+             onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/placeholder.jpg') }}';" />
+
+        <div class="brand-tag-lg">{{ product.brand }}</div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="col-lg-7">
+      <div class="detail-category-tag mb-2">
+        <i class="bi bi-tag me-1"></i>{{ product.category | title }}
+      </div>
+      <h1 class="detail-title">{{ product.name }}</h1>
+
+      <div class="detail-rating mb-3">
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-star-half text-warning"></i>
+        <span class="ms-2 text-muted small">(4.5 / 5.0 · 128 reviews)</span>
+      </div>
+
+      <div class="detail-price mb-1">₹{{ "{:,.0f}".format(product.price) }}</div>
+      <div class="text-muted small mb-4">
+        <i class="bi bi-truck me-1 text-success"></i>
+        {% if product.price >= 2000 %}Free delivery on this item
+        {% else %}Add ₹{{ "{:,.0f}".format(2000 - product.price) }} more for free delivery
+        {% endif %}
+      </div>
+
+      <p class="detail-desc mb-4">{{ product.description }}</p>
+
+      <!-- Specs -->
+      <div class="specs-table mb-4">
+        <h6 class="specs-heading"><i class="bi bi-list-check me-2"></i>Specifications</h6>
+        <div class="specs-grid-new">
+          {% if product.brand %}
+          <div class="spec-row"><span class="spec-k">Brand</span><span class="spec-v">{{ product.brand }}</span></div>
+          {% endif %}
+          {% if product.material %}
+          <div class="spec-row"><span class="spec-k">Material</span><span class="spec-v">{{ product.material }}</span></div>
+          {% endif %}
+          {% if product.weight %}
+          <div class="spec-row"><span class="spec-k">Weight</span><span class="spec-v">{{ product.weight }}</span></div>
+          {% endif %}
+          {% if product.size %}
+          <div class="spec-row"><span class="spec-k">Size / Handle</span><span class="spec-v">{{ product.size }}</span></div>
+          {% endif %}
+          {% if product.grade %}
+          <div class="spec-row"><span class="spec-k">Grade</span><span class="spec-v">{{ product.grade }}</span></div>
+          {% endif %}
+          <div class="spec-row">
+            <span class="spec-k">Availability</span>
+            <span class="spec-v">
+              {% if product.stock > 0 %}
+                <span class="text-success fw-bold">
+                  <i class="bi bi-check-circle-fill me-1"></i>{{ product.stock }} units in stock
+                </span>
+              {% else %}
+                <span class="text-danger fw-bold">
+                  <i class="bi bi-x-circle-fill me-1"></i>Out of Stock
+                </span>
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {% if product.stock > 0 %}
+      <div class="qty-buy-row mb-3">
+        <div class="qty-selector">
+          <button type="button" class="qty-btn" id="qtyMinus">−</button>
+          <input type="number" id="qtyDisplay" value="1"
+                 min="1" max="{{ product.stock }}" readonly class="qty-input" />
+          <button type="button" class="qty-btn" id="qtyPlus">+</button>
+        </div>
+        <a href="{{ url_for('orders.purchase', product_id=product.id) }}"
+           class="btn btn-buy-now flex-grow-1">
+          <i class="bi bi-bag-check me-2"></i>Buy Now
+        </a>
+      </div>
+      <div class="text-muted small mb-4">
+        Total for <span id="liveTotalQty">1</span> unit:
+        <strong class="text-accent" id="liveTotalPrice">
+          ₹{{ "{:,.0f}".format(product.price) }}
+        </strong>
+      </div>
+      {% else %}
+      <button class="btn btn-soldout w-100 mb-4" disabled>
+        <i class="bi bi-x-circle me-2"></i>Out of Stock — Check Back Soon
+      </button>
+      {% endif %}
+
+      <a href="{{ url_for('contact.contact') }}" class="btn btn-enquire w-100 mb-4">
+        <i class="bi bi-chat-dots me-2"></i>Enquire About This Product
+      </a>
+
+      <div class="trust-strip">
+        <div class="trust-item"><i class="bi bi-shield-check text-success"></i><span>100% Authentic</span></div>
+        <div class="trust-item"><i class="bi bi-truck text-primary"></i><span>Free Delivery ₹2k+</span></div>
+        <div class="trust-item"><i class="bi bi-arrow-repeat text-warning"></i><span>7-Day Return</span></div>
+        <div class="trust-item"><i class="bi bi-headset text-info"></i><span>Expert Support</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  var unitPrice = {{ product.price }};
+  var maxStock  = {{ product.stock }};
+  var qtyDisplay   = document.getElementById('qtyDisplay');
+  var liveTotalQty = document.getElementById('liveTotalQty');
+  var liveTotalPr  = document.getElementById('liveTotalPrice');
+
+  function updateTotal() {
+    var qty = parseInt(qtyDisplay ? qtyDisplay.value : 1) || 1;
+    if (liveTotalQty) liveTotalQty.textContent = qty;
+    if (liveTotalPr)  liveTotalPr.textContent  = '₹' + (unitPrice * qty).toLocaleString('en-IN');
+  }
+
+  var minusBtn = document.getElementById('qtyMinus');
+  var plusBtn  = document.getElementById('qtyPlus');
+  if (minusBtn) minusBtn.addEventListener('click', function() {
+    var v = parseInt(qtyDisplay.value);
+    if (v > 1) { qtyDisplay.value = v - 1; updateTotal(); }
+  });
+  if (plusBtn) plusBtn.addEventListener('click', function() {
+    var v = parseInt(qtyDisplay.value);
+    if (v < maxStock) { qtyDisplay.value = v + 1; updateTotal(); }
+  });
+</script>
+{% endblock %}

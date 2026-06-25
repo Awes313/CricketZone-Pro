@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  body { margin:0; padding:0; background:#f4f6f9; font-family:'Segoe UI',Arial,sans-serif; color:#333; }
+  .wrap { max-width:600px; margin:30px auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.08); }
+  .header { background:linear-gradient(135deg,#1a6b3c,#2d9d5f); padding:36px 40px; text-align:center; }
+  .check  { width:64px; height:64px; background:rgba(255,255,255,.2); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:30px; color:#fff; margin-bottom:16px; }
+  .header h1 { color:#fff; margin:0; font-size:26px; }
+  .header p  { color:rgba(255,255,255,.8); margin:6px 0 0; font-size:14px; }
+  .body { padding:36px 40px; }
+  .oid-box { background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:2px solid #16a34a; border-radius:10px; padding:20px; text-align:center; margin:24px 0; }
+  .oid-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#666; }
+  .oid-val   { font-size:28px; font-weight:800; color:#16a34a; letter-spacing:2px; font-family:monospace; }
+  table.dtable { width:100%; border-collapse:collapse; margin:20px 0; }
+  table.dtable td { padding:11px 14px; border-bottom:1px solid #f0f0f0; font-size:14px; }
+  table.dtable td:first-child { color:#666; font-weight:500; width:38%; }
+  table.dtable td:last-child  { color:#111; font-weight:600; }
+  .hl td { background:#f0fdf4 !important; }
+  .delivery { background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:14px; text-align:center; font-size:14px; color:#1e40af; margin-top:20px; }
+  .btn-track { display:inline-block; background:#16a34a; color:#fff !important; padding:13px 30px; border-radius:8px; text-decoration:none; font-weight:700; font-size:15px; margin:20px 0; }
+  .footer { background:#f8f9fa; padding:20px 40px; text-align:center; border-top:1px solid #eee; }
+  .footer p { color:#999; font-size:12px; margin:3px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="check">✓</div>
+    <h1>Order Confirmed!</h1>
+    <p>Thank you for shopping with CricketZone</p>
+  </div>
+
+  <div class="body">
+    <p style="font-size:16px;">Hi <strong>{{ order.customer_name }}</strong>,</p>
+    <p style="color:#555;">Your order has been placed and is being processed. Here are your complete order details:</p>
+
+    <div class="oid-box">
+      <div class="oid-label">Your Order ID</div>
+      <div class="oid-val">{{ order.order_id }}</div>
+      <small style="color:#666;font-size:12px;">Use this ID to track your order on our website</small>
+    </div>
+
+    <table class="dtable">
+      <tr><td>Product</td><td>{{ product.name }}</td></tr>
+      <tr><td>Brand</td><td>{{ product.brand }}</td></tr>
+      <tr><td>Quantity</td><td>{{ order.quantity }}</td></tr>
+      <tr class="hl"><td>Total Amount</td><td style="color:#16a34a;font-size:17px;">₹{{ "{:,.0f}".format(order.total_price) }}</td></tr>
+      <tr><td>Delivery Address</td><td>{{ order.address }}</td></tr>
+      <tr><td>Order Status</td><td style="color:#16a34a;">{{ order.status }}</td></tr>
+      <tr><td>Order Date</td><td>{{ order.get('created_at_display', 'Confirmed') }}</td></tr>
+    </table>
+
+    <div class="delivery">
+      🚚 Estimated Delivery: <strong>3–5 Business Days</strong>
+    </div>
+
+    <div style="text-align:center;">
+      <a href="http://127.0.0.1:5000/track" class="btn-track">Track Your Order</a>
+    </div>
+
+    <p style="font-size:13px;color:#666;margin-top:20px;">
+      Questions? Contact us at
+      <a href="mailto:mohammed7777awes@gmail.com">mohammed7777awes@gmail.com</a>
+      or call <strong>+91 91488 90802</strong>.
+    </p>
+  </div>
+
+  <div class="footer">
+    <p><strong>CricketZone</strong> – Premium Cricket Equipment</p>
+    <p>Sunni Chowk, Main Road, Hangal – 581104, Karnataka</p>
+    <p>mohammed7777awes@gmail.com | +91 91488 90802</p>
+  </div>
+
+</div>
+</body>
+</html>

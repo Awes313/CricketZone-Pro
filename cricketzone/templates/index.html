@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block title %}CricketZone – Premium Cricket Equipment Store{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero-section" id="heroSection">
+  <div class="hero-bg-img"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="container-fluid px-4 px-lg-5 hero-container">
+    <div class="row hero-content-row align-items-center">
+
+      <!-- Left: Text -->
+      <div class="col-lg-6 col-md-7 col-12 text-center text-md-start">
+        <div class="mb-3">
+          <span class="hero-badge">
+            <i class="bi bi-star-fill me-1"></i>India's #1 Cricket Store
+          </span>
+        </div>
+        <h1 class="hero-title">
+          Play Like<br />
+          <span class="hero-accent">A Champion</span>
+        </h1>
+        <p class="hero-subtitle">
+          Professional cricket equipment trusted by club players, academy trainees,
+          and state-level cricketers. English Willow bats, match-grade balls, and
+          complete kit packages — all in one place.
+        </p>
+
+        <div class="hero-stats mb-4">
+          <div class="stat-item">
+            <div class="stat-number">{{ total_products }}+</div>
+            <div class="stat-label">Products</div>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item">
+            <div class="stat-number">{{ total_orders }}+</div>
+            <div class="stat-label">Orders Placed</div>
+          </div>
+          <div class="stat-sep"></div>
+          <div class="stat-item">
+            <div class="stat-number">10+</div>
+            <div class="stat-label">Top Brands</div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start mb-4">
+          <a href="{{ url_for('products.bats') }}" class="btn btn-hero-primary">
+            <i class="bi bi-vinyl me-2"></i>Shop Bats
+          </a>
+          <a href="{{ url_for('products.kits') }}" class="btn btn-hero-outline">
+            <i class="bi bi-bag me-2"></i>Browse Kits
+          </a>
+        </div>
+
+        <div class="hero-scroll-hint"
+             onclick="document.getElementById('featuresStrip').scrollIntoView({behavior:'smooth'})">
+          <span>Explore Products Below</span>
+          <i class="bi bi-chevron-double-down ms-2"></i>
+        </div>
+      </div>
+
+      <!-- Right: Trophy Circle -->
+      <div class="col-lg-6 col-md-5 d-none d-md-flex justify-content-center align-items-center">
+        <div class="hero-trophy-wrap">
+          <div class="hero-ring hero-ring-outer"></div>
+          <div class="hero-ring hero-ring-middle"></div>
+          <div class="hero-ring hero-ring-inner">
+            <i class="bi bi-trophy-fill hero-trophy-icon"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES STRIP -->
+<section class="features-strip py-4" id="featuresStrip">
+  <div class="container-fluid px-5 px-lg-6">
+    <div class="row g-3 justify-content-center">
+      <div class="col-lg-3 col-md-6 col-6">
+        <div class="feature-card">
+          <i class="bi bi-truck feature-icon"></i>
+          <div>
+            <div class="feature-title">Free Delivery</div>
+            <div class="feature-sub">Orders above ₹2,000</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-6">
+        <div class="feature-card">
+          <i class="bi bi-shield-check feature-icon"></i>
+          <div>
+            <div class="feature-title">100% Authentic</div>
+            <div class="feature-sub">Brand authorised products</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-6">
+        <div class="feature-card">
+          <i class="bi bi-arrow-counterclockwise feature-icon"></i>
+          <div>
+            <div class="feature-title">Easy Returns</div>
+            <div class="feature-sub">7-day return policy</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-6">
+        <div class="feature-card">
+          <i class="bi bi-headset feature-icon"></i>
+          <div>
+            <div class="feature-title">Expert Support</div>
+            <div class="feature-sub">Mon–Sat, 9 AM–7 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED BATS -->
+<section class="products-section py-5">
+  <div class="container-fluid px-4 px-lg-5">
+    <div class="row justify-content-center">
+      <div class="col-11">
+        <div class="section-header d-flex justify-content-between align-items-end mb-4">
+          <div>
+            <div class="section-tag">Premium Collection</div>
+            <h2 class="section-title">Cricket <span class="text-accent">Bats</span></h2>
+          </div>
+          <a href="{{ url_for('products.bats') }}" class="btn btn-view-all">
+            View All <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+        <div class="row g-4">
+          {% for product in featured_bats %}
+          <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            {% include "_product_card.html" %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner py-5">
+  <div class="container-fluid px-4 px-lg-5">
+    <div class="row justify-content-center">
+      <div class="col-11">
+        <div class="cta-box">
+          <div class="row align-items-center g-4">
+            <div class="col-lg-8 text-center text-lg-start">
+              <div class="cta-icon mb-2"><i class="bi bi-trophy-fill"></i></div>
+              <h2 class="cta-title">Ready to Elevate Your Game?</h2>
+              <p class="cta-sub mb-0">Professional cricket gear trusted by players across India.</p>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+              <a href="{{ url_for('products.kits') }}" class="btn btn-cta mb-2 me-2">
+                <i class="bi bi-bag-check me-2"></i>Shop Complete Kits
+              </a>
+              <a href="{{ url_for('contact.contact') }}" class="btn btn-cta-outline mb-2">
+                <i class="bi bi-chat-dots me-2"></i>Expert Advice
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED BALLS -->
+<section class="products-section py-5 bg-light-cz">
+  <div class="container-fluid px-4 px-lg-5">
+    <div class="row justify-content-center">
+      <div class="col-11">
+        <div class="section-header d-flex justify-content-between align-items-end mb-4">
+          <div>
+            <div class="section-tag">Match & Training</div>
+            <h2 class="section-title">Cricket <span class="text-accent">Balls</span></h2>
+          </div>
+          <a href="{{ url_for('products.balls') }}" class="btn btn-view-all">
+            View All <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+        <div class="row g-4">
+          {% for product in featured_balls %}
+          <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            {% include "_product_card.html" %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED KITS -->
+<section class="products-section py-5">
+  <div class="container-fluid px-4 px-lg-5">
+    <div class="row justify-content-center">
+      <div class="col-11">
+        <div class="section-header d-flex justify-content-between align-items-end mb-4">
+          <div>
+            <div class="section-tag">Complete Packages</div>
+            <h2 class="section-title">Cricket <span class="text-accent">Kits</span></h2>
+          </div>
+          <a href="{{ url_for('products.kits') }}" class="btn btn-view-all">
+            View All <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+        <div class="row g-4">
+          {% for product in featured_kits %}
+          <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+            {% include "_product_card.html" %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<section class="brands-section py-5 bg-light-cz">
+  <div class="container-fluid px-4 px-lg-5 text-center">
+    <div class="section-tag mb-2">Trusted Partners</div>
+    <h3 class="section-title mb-4">Authorised <span class="text-accent">Brands</span></h3>
+    <div class="brands-row">
+      {% for brand in ["MRF","SS","Kookaburra","SG","GM","Adidas","Puma","Dukes","Gray-Nicolls","New Balance"] %}
+      <div class="brand-badge">{{ brand }}</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Orders – CricketZone Admin{% endblock %}
+{% block page_title %}All Orders{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <span class="text-muted">{{ orders|length }} orders total</span>
+  <a href="{{ url_for('admin.export_orders') }}" class="btn btn-outline-success btn-sm">
+    <i class="bi bi-file-earmark-csv me-1"></i>Export CSV
+  </a>
+</div>
+
+<div class="admin-card">
+  <div class="admin-card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover admin-table mb-0">
+        <thead>
+          <tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          {% for o in orders %}
+          <tr>
+            <td class="fw-mono text-accent">{{ o.order_id }}</td>
+            <td>
+              <div class="fw-semibold">{{ o.customer_name }}</div>
+              <small class="text-muted">{{ o.customer_email }}</small>
+            </td>
+            <td>{{ o.product_name }}</td>
+            <td>{{ o.quantity }}</td>
+            <td class="fw-bold">₹{{ "{:,.0f}".format(o.total_price) }}</td>
+            <td>
+              <span class="badge
+                {{ 'bg-success' if o.status=='Delivered'
+                   else 'bg-primary' if o.status=='Confirmed'
+                   else 'bg-warning text-dark' if o.status=='Processing'
+                   else 'bg-info' }}">
+                {{ o.status }}
+              </span>
+            </td>
+            <td><small>{{ o.created_at[:10] if o.created_at else '' }}</small></td>
+            <td>
+              <form method="POST"
+                    action="{{ url_for('admin.update_order', order_id=o.id) }}"
+                    class="d-flex gap-1">
+                <select name="status" class="form-select form-select-sm" style="min-width:110px;">
+                  {% for s in ['Confirmed','Processing','Shipped','Delivered','Cancelled'] %}
+                  <option {{ 'selected' if o.status == s else '' }}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-xs btn-outline-primary">
+                  <i class="bi bi-check2"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="8" class="text-center text-muted py-4">No orders yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

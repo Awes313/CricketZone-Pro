@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Track Your Order – CricketZone{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container-fluid px-4 px-lg-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cz-breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item active">Track Order</li>
+      </ol>
+    </nav>
+    <h1 class="page-hero-title"><i class="bi bi-geo-alt me-2"></i>Track Your Order</h1>
+    <p class="page-hero-sub">Enter your Order ID to view the current status of your shipment</p>
+  </div>
+</div>
+
+<div class="container-fluid px-4 px-lg-5 py-5">
+
+  <div class="mb-4">
+    <a href="javascript:history.back()" class="btn btn-back">
+      <i class="bi bi-arrow-left me-2"></i>Go Back
+    </a>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-xl-6">
+
+      <div class="track-search-card mb-4">
+        <h5 class="mb-3"><i class="bi bi-search me-2"></i>Enter Order ID</h5>
+        <form method="POST" action="{{ url_for('orders.track_order') }}">
+          <div class="input-group track-input-group">
+            <span class="input-group-text"><i class="bi bi-hash"></i></span>
+            <input type="text" name="order_id" class="form-control cz-input"
+                   placeholder="e.g. CZ-2026-1001"
+                   value="{{ request.form.get('order_id', '') }}" required />
+            <button class="btn btn-track-search" type="submit">
+              <i class="bi bi-search me-1"></i>Track
+            </button>
+          </div>
+          <small class="text-muted mt-2 d-block">
+            <i class="bi bi-info-circle me-1"></i>
+            Your Order ID was sent in your confirmation email and shown on the order success page.
+          </small>
+        </form>
+      </div>
+
+      {% if order %}
+      <div class="track-result-card">
+        <div class="track-result-header">
+          <div>
+            <div class="track-order-id">{{ order.order_id }}</div>
+            <small class="text-muted">Placed on {{ order.created_at[:10] if order.created_at else '' }}</small>
+          </div>
+          <span class="track-status-badge
+            {{ 'badge-delivered' if order.status == 'Delivered'
+               else 'badge-confirmed' if order.status == 'Confirmed'
+               else 'badge-shipped' }}">
+            {{ order.status }}
+          </span>
+        </div>
+
+        <div class="track-timeline mt-4 mb-4">
+          {% set steps = [
+            ('Order Placed',  'check-circle-fill', True),
+            ('Confirmed',     'shield-check',      order.status in ['Confirmed','Processing','Shipped','Delivered']),
+            ('Processing',    'gear-fill',         order.status in ['Processing','Shipped','Delivered']),
+            ('Shipped',       'truck',             order.status in ['Shipped','Delivered']),
+            ('Delivered',     'house-check-fill',  order.status == 'Delivered')
+          ] %}
+          {% for label, icon, done in steps %}
+          <div class="timeline-step {{ 'done' if done else '' }}">
+            <div class="timeline-dot"><i class="bi bi-{{ icon }}"></i></div>
+            <div class="timeline-label">{{ label }}</div>
+          </div>
+          {% if not loop.last %}
+          <div class="timeline-line {{ 'done' if done else '' }}"></div>
+          {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="track-info-grid">
+          <div class="track-info-item">
+            <div class="track-info-label">Product</div>
+            <div class="track-info-val">{{ order.product_name }}</div>
+          </div>
+          <div class="track-info-item">
+            <div class="track-info-label">Quantity</div>
+            <div class="track-info-val">{{ order.quantity }}</div>
+          </div>
+          <div class="track-info-item">
+            <div class="track-info-label">Total Paid</div>
+            <div class="track-info-val fw-bold text-success">
+              ₹{{ "{:,.0f}".format(order.total_price) }}
+            </div>
+          </div>
+          <div class="track-info-item">
+            <div class="track-info-label">Customer</div>
+            <div class="track-info-val">{{ order.customer_name }}</div>
+          </div>
+          <div class="track-info-item" style="grid-column: span 2">
+            <div class="track-info-label">Delivery Address</div>
+            <div class="track-info-val">{{ order.address }}</div>
+          </div>
+        </div>
+
+        <div class="text-center mt-3">
+          <a href="{{ url_for('contact.contact') }}" class="btn btn-enquire btn-sm">
+            <i class="bi bi-chat-dots me-1"></i>Need help with this order?
+          </a>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

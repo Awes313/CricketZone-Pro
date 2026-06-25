@@ -1,0 +1,90 @@
+<div class="cz-product-card">
+
+  <!-- Front Face -->
+  <div class="card-front">
+    {% if product.stock == 0 %}
+      <div class="stock-badge out"><i class="bi bi-x-circle-fill me-1"></i>Out of Stock</div>
+    {% elif product.stock <= 5 %}
+      <div class="stock-badge low"><i class="bi bi-fire me-1"></i>Only {{ product.stock }} left</div>
+    {% else %}
+      <div class="stock-badge in"><i class="bi bi-check-circle-fill me-1"></i>In Stock</div>
+    {% endif %}
+
+    <div class="cat-ribbon cat-{{ product.category }}">{{ product.category | upper }}</div>
+
+    <!-- Image — object-fit: contain so full product visible -->
+    <div class="card-img-wrap">
+      <img
+        src="{{ url_for('static', filename='images/' + product.image) }}"
+        alt="{{ product.name }}"
+        class="card-product-img"
+        loading="lazy"
+        onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/placeholder.jpg') }}';"
+      />
+      <div class="img-overlay"></div>
+    </div>
+
+    <div class="card-front-body">
+      <div class="product-brand-tag">{{ product.brand }}</div>
+      <h5 class="product-title">{{ product.name }}</h5>
+      <div class="price-row">
+        <span class="product-price">₹{{ "{:,.0f}".format(product.price) }}</span>
+        <span class="hover-hint"><i class="bi bi-hand-index me-1"></i>Hover for details</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back Face -->
+  <div class="card-back">
+    <div>
+      <div class="card-back-brand">{{ product.brand }}</div>
+      <h5 class="card-back-title">{{ product.name }}</h5>
+      <p class="card-back-desc">{{ product.description[:110] }}...</p>
+    </div>
+
+    <div class="mini-specs">
+      {% if product.material %}
+      <div class="mini-spec-row">
+        <span class="mini-spec-key"><i class="bi bi-layers me-1"></i>Material</span>
+        <span class="mini-spec-val">{{ product.material }}</span>
+      </div>
+      {% endif %}
+      {% if product.weight %}
+      <div class="mini-spec-row">
+        <span class="mini-spec-key"><i class="bi bi-speedometer2 me-1"></i>Weight</span>
+        <span class="mini-spec-val">{{ product.weight }}</span>
+      </div>
+      {% endif %}
+      {% if product.grade %}
+      <div class="mini-spec-row">
+        <span class="mini-spec-key"><i class="bi bi-award me-1"></i>Grade</span>
+        <span class="mini-spec-val">{{ product.grade }}</span>
+      </div>
+      {% endif %}
+      <div class="mini-spec-row">
+        <span class="mini-spec-key"><i class="bi bi-box me-1"></i>Stock</span>
+        <span class="mini-spec-val {{ 'text-danger' if product.stock == 0 else 'text-success' }}">
+          {{ product.stock }} units
+        </span>
+      </div>
+    </div>
+
+    <div>
+      <div class="card-back-price">₹{{ "{:,.0f}".format(product.price) }}</div>
+      <div class="card-actions">
+        <a href="{{ url_for('products.product_detail', product_id=product.id) }}" class="btn-card-details">
+          <i class="bi bi-eye me-1"></i>View Details
+        </a>
+        {% if product.stock > 0 %}
+        <a href="{{ url_for('orders.purchase', product_id=product.id) }}" class="btn-card-buy">
+          <i class="bi bi-bag-check me-1"></i>Buy Now
+        </a>
+        {% else %}
+        <button class="btn-card-soldout" disabled>
+          <i class="bi bi-x-circle me-1"></i>Sold Out
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

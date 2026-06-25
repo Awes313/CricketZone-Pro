@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Contact Us – CricketZone{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container-fluid px-4 px-lg-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cz-breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item active">Contact</li>
+      </ol>
+    </nav>
+    <h1 class="page-hero-title"><i class="bi bi-chat-dots me-2"></i>Contact Us</h1>
+    <p class="page-hero-sub">Our cricket experts are here to help you choose the right equipment</p>
+  </div>
+</div>
+
+<div class="container-fluid px-4 px-lg-5 py-5">
+
+  <div class="mb-4">
+    <a href="{{ url_for('main.index') }}" class="btn btn-back">
+      <i class="bi bi-house me-2"></i>Back to Home
+    </a>
+  </div>
+
+  <div class="row g-5">
+
+    <!-- Contact Info -->
+    <div class="col-lg-4">
+      <h5 class="fw-bold mb-4">Get In Touch</h5>
+
+      <div class="contact-info-card mb-3">
+        <div class="contact-info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+        <div>
+          <div class="contact-info-title">Our Store</div>
+          <div class="contact-info-text">
+            Sunni Chowk, Main Road,<br />Hangal – 581104, Karnataka
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-info-card mb-3">
+        <div class="contact-info-icon"><i class="bi bi-telephone-fill"></i></div>
+        <div>
+          <div class="contact-info-title">Phone</div>
+          <div class="contact-info-text">
+            +91 91488 90802<br />+91 90802 91488
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-info-card mb-3">
+        <div class="contact-info-icon"><i class="bi bi-envelope-fill"></i></div>
+        <div>
+          <div class="contact-info-title">Email</div>
+          <div class="contact-info-text">mohammed7777awes@gmail.com</div>
+        </div>
+      </div>
+
+      <div class="contact-info-card mb-4">
+        <div class="contact-info-icon"><i class="bi bi-clock-fill"></i></div>
+        <div>
+          <div class="contact-info-title">Working Hours</div>
+          <div class="contact-info-text">
+            Mon – Sat: 9:00 AM – 7:00 PM<br />Sunday: Closed
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-contact-links">
+        <a href="{{ url_for('orders.track_order') }}" class="quick-link">
+          <i class="bi bi-geo-alt me-2"></i>Track Your Order
+        </a>
+        <a href="{{ url_for('products.bats') }}" class="quick-link">
+          <i class="bi bi-vinyl me-2"></i>Browse Bats
+        </a>
+        <a href="{{ url_for('products.balls') }}" class="quick-link">
+          <i class="bi bi-circle me-2"></i>Browse Balls
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="col-lg-8">
+      <div class="contact-form-card">
+        <h5 class="fw-bold mb-4">
+          <i class="bi bi-envelope-paper me-2"></i>Send Us a Message
+        </h5>
+        <form method="POST" action="{{ url_for('contact.contact') }}">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Full Name <span class="text-danger">*</span></label>
+              <input type="text" name="name" class="form-control cz-input"
+                     placeholder="Your name" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email Address <span class="text-danger">*</span></label>
+              <input type="email" name="email" class="form-control cz-input"
+                     placeholder="your@gmail.com" required />
+            </div>
+            <div class="col-12">
+              <label class="form-label">Subject</label>
+              <select name="subject" class="form-select cz-input">
+                <option value="">-- Select a topic --</option>
+                <option>Product Enquiry</option>
+                <option>Order Issue</option>
+                <option>Return / Refund</option>
+                <option>Bulk / Team Order</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Message <span class="text-danger">*</span></label>
+              <textarea name="message" class="form-control cz-input" rows="5"
+                        placeholder="Tell us how we can help you..."
+                        required></textarea>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-contact-submit">
+                <i class="bi bi-send me-2"></i>Send Message
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Search: "{{ query }}" – CricketZone{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container-fluid px-4 px-lg-5">
+    <h2 class="page-hero-title">
+      {% if query %}
+        Search results for "<span class="text-accent">{{ query }}</span>"
+        <span class="fs-5 ms-2 text-muted">({{ results|length }} found)</span>
+      {% else %}
+        Search Products
+      {% endif %}
+    </h2>
+  </div>
+</div>
+
+<div class="container-fluid px-4 px-lg-5 py-5">
+  <form action="{{ url_for('main.search') }}" method="GET" class="mb-5">
+    <div class="input-group search-page-group">
+      <input type="search" name="q" class="form-control cz-input"
+             placeholder="Search for bats, balls, kits, brands..."
+             value="{{ query }}" />
+      <button class="btn btn-search-page" type="submit">
+        <i class="bi bi-search me-1"></i>Search
+      </button>
+    </div>
+  </form>
+
+  {% if query and results %}
+    <div class="row g-4">
+      {% for product in results %}
+      <div class="col-xl-3 col-lg-4 col-md-6">
+        {% include "_product_card.html" %}
+      </div>
+      {% endfor %}
+    </div>
+
+  {% elif query and not results %}
+    <div class="empty-state text-center py-5">
+      <div class="empty-icon"><i class="bi bi-search"></i></div>
+      <h4 class="mt-3">No results found for "{{ query }}"</h4>
+      <p class="text-muted">Try a different keyword — brand name, product type, or category.</p>
+      <div class="d-flex gap-2 justify-content-center mt-3">
+        <a href="{{ url_for('products.bats') }}"  class="btn btn-view-all">Browse Bats</a>
+        <a href="{{ url_for('products.balls') }}" class="btn btn-view-all">Browse Balls</a>
+        <a href="{{ url_for('products.kits') }}"  class="btn btn-view-all">Browse Kits</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="empty-state text-center py-5">
+      <div class="empty-icon"><i class="bi bi-bag"></i></div>
+      <h4 class="mt-3">What are you looking for?</h4>
+      <p class="text-muted">Search by product name, brand, or category.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
