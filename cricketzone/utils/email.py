@@ -24,6 +24,12 @@ def send_order_email(order: dict, product: dict) -> bool:
             order=order,
             product=product,
         )
+        
+        print("MAIL_USERNAME:", current_app.config["MAIL_USERNAME"])
+        print("MAIL_SERVER:", current_app.config["MAIL_SERVER"])
+        print("MAIL_PORT:", current_app.config["MAIL_PORT"])
+        print("MAIL_TLS:", current_app.config["MAIL_USE_TLS"])
+
         mail.send(msg)
         logger.info("Email sent for order %s", order["order_id"])
         return True
