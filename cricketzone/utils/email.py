@@ -24,12 +24,6 @@ def send_order_email(order: dict, product: dict) -> bool:
             order=order,
             product=product,
         )
-        
-        print("MAIL_USERNAME:", current_app.config["MAIL_USERNAME"])
-        print("MAIL_SERVER:", current_app.config["MAIL_SERVER"])
-        print("MAIL_PORT:", current_app.config["MAIL_PORT"])
-        print("MAIL_TLS:", current_app.config["MAIL_USE_TLS"])
-
         mail.send(msg)
         logger.info("Email sent for order %s", order["order_id"])
         return True
@@ -41,22 +35,34 @@ def send_order_email(order: dict, product: dict) -> bool:
 
 def send_verification_email(user: dict, verification_url: str) -> bool:
     from flask_mail import Message
+
     try:
         sender_email = current_app.config["MAIL_USERNAME"]
+
         msg = Message(
             subject="Verify your CricketZone account",
             recipients=[user["email"]],
             sender=("CricketZone", sender_email),
         )
+
         msg.html = render_template(
             "auth/verification_email.html",
             full_name=user["full_name"],
             verification_url=verification_url,
         )
+
+        # DEBUG
+        print("MAIL_USERNAME:", current_app.config["MAIL_USERNAME"])
+        print("MAIL_SERVER:", current_app.config["MAIL_SERVER"])
+        print("MAIL_PORT:", current_app.config["MAIL_PORT"])
+        print("MAIL_TLS:", current_app.config["MAIL_USE_TLS"])
+
         mail.send(msg)
+
         logger.info("Verification email sent to %s", user["email"])
         return True
+
     except Exception as exc:
-        logger.warning("Verification email failed for %s: %s", user.get("email"), exc)
-        print(f"EMAIL ERROR: {exc}")
+        logger.exception("Verification email failed")
+        print(f"EMAIL ERROR: {repr(exc)}")
         return False
