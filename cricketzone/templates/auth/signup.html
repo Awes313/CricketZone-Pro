@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Create Account – CricketZone{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container-fluid px-4 px-lg-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cz-breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item active">Sign Up</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container-fluid px-4 px-lg-5 py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-xl-5">
+      <div class="purchase-card">
+        <div class="purchase-header">
+          <h4 class="mb-0"><i class="bi bi-person-plus-fill me-2"></i>Create Your Account</h4>
+        </div>
+
+        <form method="POST" class="purchase-form" novalidate>
+          <div class="px-4 py-4">
+
+            <div class="mb-3">
+              <label class="form-label">Full Name <span class="text-danger">*</span></label>
+              <input type="text" name="full_name" class="form-control cz-input"
+                     placeholder="Your full name" value="{{ form_data.get('full_name', '') }}" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email Address <span class="text-danger">*</span></label>
+              <input type="email" name="email" class="form-control cz-input"
+                     placeholder="your@gmail.com" value="{{ form_data.get('email', '') }}" required />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" name="phone" class="form-control cz-input"
+                     placeholder="+91 XXXXX XXXXX" value="{{ form_data.get('phone', '') }}" />
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Password <span class="text-danger">*</span></label>
+                <input type="password" name="password" class="form-control cz-input"
+                       placeholder="At least 6 characters" minlength="6" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                <input type="password" name="confirm_password" class="form-control cz-input"
+                       placeholder="Re-enter password" minlength="6" required />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-place-order w-100 mt-2">
+              <i class="bi bi-envelope-check me-2"></i>Create Account
+            </button>
+
+            <p class="text-center text-muted small mt-3">
+              We'll send a verification link to your email — you'll need to confirm it before you can login.
+            </p>
+
+            <hr class="my-3" />
+
+            <p class="text-center small mb-0">
+              Already have an account?
+              <a href="{{ url_for('auth.login') }}" class="fw-semibold">Login here</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

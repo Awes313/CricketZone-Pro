@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Resend Verification – CricketZone{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container-fluid px-4 px-lg-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cz-breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('auth.login') }}">Login</a></li>
+        <li class="breadcrumb-item active">Resend Verification</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container-fluid px-4 px-lg-5 py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-xl-4">
+      <div class="purchase-card">
+        <div class="purchase-header">
+          <h4 class="mb-0"><i class="bi bi-envelope-arrow-up me-2"></i>Resend Verification Email</h4>
+        </div>
+
+        <form method="POST" class="purchase-form" novalidate>
+          <div class="px-4 py-4">
+            <p class="text-muted small">
+              Enter the email you signed up with — we'll send a fresh verification link.
+            </p>
+
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control cz-input"
+                     placeholder="your@gmail.com" value="{{ prefill_email }}" required autofocus />
+            </div>
+
+            <button type="submit" class="btn btn-place-order w-100 mt-2">
+              <i class="bi bi-send me-2"></i>Send Verification Link
+            </button>
+
+            <p class="text-center small mt-3 mb-0">
+              <a href="{{ url_for('auth.login') }}">Back to Login</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

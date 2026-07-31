@@ -12,18 +12,6 @@
 </head>
 <body>
 
-<!-- Topbar -->
-<div class="topbar py-1">
-  <div class="container-fluid px-4 px-lg-5 d-flex justify-content-between align-items-center">
-    <small><i class="bi bi-truck me-1"></i>Free delivery on orders above ₹2,000</small>
-    <small>
-      <i class="bi bi-telephone me-1"></i>+91 91488 90802
-      <span class="mx-2">|</span>
-      <i class="bi bi-envelope me-1"></i>mohammed7777awes@gmail.com
-    </small>
-  </div>
-</div>
-
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark cz-navbar sticky-top">
   <div class="container-fluid px-4 px-lg-5">
@@ -93,9 +81,30 @@
         </div>
       </form>
 
-      <a href="{{ url_for('admin.login') }}" class="btn btn-outline-light btn-sm">
-        <i class="bi bi-shield-lock me-1"></i>Admin
-      </a>
+      <div class="d-flex align-items-center gap-2">
+        {% if session.get('user_id') %}
+          <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i>{{ session.get('user_name') }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                  <i class="bi bi-box-arrow-right me-2"></i>Logout
+                </a>
+              </li>
+            </ul>
+          </div>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+          </a>
+          <a href="{{ url_for('auth.signup') }}" class="btn btn-light btn-sm">
+            <i class="bi bi-person-plus me-1"></i>Sign Up
+          </a>
+        {% endif %}
+      </div>
     </div>
   </div>
 </nav>
@@ -167,7 +176,7 @@
           </div>
           <div class="contact-item">
             <i class="bi bi-envelope-fill"></i>
-            <span>mohammed7777awes@gmail.com</span>
+            <span>mohamed7777awes@gmail.com</span>
           </div>
           <div class="contact-item">
             <i class="bi bi-clock-fill"></i>

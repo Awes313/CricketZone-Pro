@@ -97,14 +97,23 @@ def get_low_stock_products(threshold=5):
 # ── Orders 
 
 def create_order(data):
+    """
+    data must include the usual order fields, plus (optionally):
+      razorpay_order_id, razorpay_payment_id, payment_status, user_id
+    """
     execute_db(
         "INSERT INTO orders "
         "(order_id,customer_name,customer_email,customer_phone,"
-        "product_id,quantity,total_price,address) "
-        "VALUES (?,?,?,?,?,?,?,?)",
+        "product_id,quantity,total_price,address,"
+        "razorpay_order_id,razorpay_payment_id,payment_status,user_id) "
+        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
         [data["order_id"], data["customer_name"], data["customer_email"],
          data["customer_phone"], data["product_id"],
-         data["quantity"], data["total_price"], data["address"]]
+         data["quantity"], data["total_price"], data["address"],
+         data.get("razorpay_order_id"),
+         data.get("razorpay_payment_id"),
+         data.get("payment_status", "Pending"),
+         data.get("user_id")]
     )
     reduce_stock(data["product_id"], data["quantity"])
     log_action("NEW_ORDER",
@@ -126,6 +135,15 @@ def get_order_tracking(order_id):
         "FROM orders o JOIN products p ON o.product_id=p.id "
         "WHERE o.order_id=?",
         [order_id], one=True
+    )
+
+
+def get_orders_by_user(user_id):
+    return query_db(
+        "SELECT o.*, p.name AS product_name, p.image, p.category "
+        "FROM orders o JOIN products p ON o.product_id=p.id "
+        "WHERE o.user_id=? ORDER BY o.id DESC",
+        [user_id]
     )
 
 
@@ -193,6 +211,52 @@ def get_counts():
         "messages": query_db("SELECT COUNT(*) AS c FROM contact_messages", one=True)["c"],
         "revenue":  get_total_revenue(),
     }
+
+
+# ── Users / Auth 
+
+def create_user(data):
+    """
+    data: full_name, email, phone, password_hash, verification_token, token_created_at
+    Returns the new user's id.
+    """
+    return execute_db(
+        "INSERT INTO users "
+        "(full_name,email,phone,password_hash,is_verified,verification_token,token_created_at) "
+        "VALUES (?,?,?,?,0,?,?)",
+        [data["full_name"], data["email"].lower().strip(), data.get("phone"),
+         data["password_hash"], data["verification_token"], data["token_created_at"]]
+    )
+
+
+def get_user_by_email(email):
+    return query_db(
+        "SELECT * FROM users WHERE email=?", [email.lower().strip()], one=True
+    )
+
+
+def get_user_by_id(user_id):
+    return query_db("SELECT * FROM users WHERE id=?", [user_id], one=True)
+
+
+def get_user_by_token(token):
+    return query_db(
+        "SELECT * FROM users WHERE verification_token=?", [token], one=True
+    )
+
+
+def mark_user_verified(user_id):
+    execute_db(
+        "UPDATE users SET is_verified=1, verification_token=NULL, token_created_at=NULL WHERE id=?",
+        [user_id]
+    )
+
+
+def set_verification_token(user_id, token, created_at):
+    execute_db(
+        "UPDATE users SET verification_token=?, token_created_at=? WHERE id=?",
+        [token, created_at, user_id]
+    )
 
 
 # ── Contact Messages 

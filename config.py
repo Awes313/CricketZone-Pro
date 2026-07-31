@@ -30,6 +30,11 @@ class Config:
     ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
     ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "cricketzone@2026")
 
+    # Razorpay
+    RAZORPAY_KEY_ID     = os.environ.get("RAZORPAY_KEY_ID", "")
+    RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
+    RAZORPAY_CURRENCY   = "INR"
+
 
 class DevelopmentConfig(Config):
     DEBUG   = True

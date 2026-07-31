@@ -62,27 +62,22 @@
         {% else %}
 
         <form action="{{ url_for('orders.purchase', product_id=product.id) }}"
-              method="POST" class="purchase-form">
+              method="POST" class="purchase-form" id="purchaseForm">
           <div class="px-4 pb-4">
 
             <h6 class="form-section-heading mt-4">
-              <i class="bi bi-person me-2"></i>Customer Details
+              <i class="bi bi-person-check me-2"></i>Ordering As
             </h6>
+            <div class="account-info-box mb-4 p-3" style="background:#f0fdf4; border:1px solid #dcfce7; border-radius:8px;">
+              <div class="fw-bold">{{ user.full_name }}</div>
+              <div class="text-muted small">{{ user.email }}</div>
+            </div>
+
             <div class="row g-3 mb-4">
-              <div class="col-md-6">
-                <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                <input type="text" name="name" class="form-control cz-input"
-                       placeholder="Your name" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Email Address <span class="text-danger">*</span></label>
-                <input type="email" name="email" class="form-control cz-input"
-                       placeholder="your@gmail.com" required />
-              </div>
               <div class="col-md-6">
                 <label class="form-label">Phone Number</label>
                 <input type="tel" name="phone" class="form-control cz-input"
-                       placeholder="+91 XXXXX XXXXX" />
+                       placeholder="+91 XXXXX XXXXX" value="{{ user.phone or '' }}" />
               </div>
               <div class="col-md-6">
                 <label class="form-label">Quantity <span class="text-danger">*</span></label>
@@ -125,7 +120,12 @@
               </div>
             </div>
 
-            <button type="submit" class="btn btn-place-order w-100">
+            <!-- Filled by JS only after Razorpay checkout succeeds -->
+            <input type="hidden" name="razorpay_order_id"   id="razorpay_order_id">
+            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+            <input type="hidden" name="razorpay_signature"  id="razorpay_signature">
+
+            <button type="submit" class="btn btn-place-order w-100" id="placeOrderBtn">
               <i class="bi bi-bag-check me-2"></i>Place Order
             </button>
             <p class="text-center text-muted small mt-3">
@@ -142,6 +142,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 var price    = {{ product.price }};
 var qtyInput = document.getElementById('qtyInput');
@@ -152,6 +153,83 @@ if (qtyInput) {
     var qty = Math.max(1, parseInt(this.value) || 1);
     if (totalQty) totalQty.textContent = qty;
     if (totalPr)  totalPr.textContent  = '₹' + (price * qty).toLocaleString('en-IN');
+  });
+}
+
+// ── Razorpay checkout flow ──
+var purchaseForm  = document.getElementById('purchaseForm');
+var placeOrderBtn = document.getElementById('placeOrderBtn');
+var paymentDone   = false;
+
+if (purchaseForm) {
+  purchaseForm.addEventListener('submit', function (e) {
+    if (paymentDone) return;
+
+    e.preventDefault();
+
+    if (!purchaseForm.checkValidity()) {
+      purchaseForm.reportValidity();
+      return;
+    }
+
+    placeOrderBtn.disabled = true;
+    placeOrderBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing...';
+
+    var formData = new FormData(purchaseForm);
+
+    fetch("{{ url_for('orders.create_payment_order', product_id=product.id) }}", {
+      method: 'POST',
+      body: formData
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.error) {
+          alert(data.error);
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.innerHTML = '<i class="bi bi-bag-check me-2"></i>Place Order';
+          return;
+        }
+
+        var options = {
+          key: data.key,
+          amount: data.amount,
+          currency: data.currency,
+          name: 'CricketZone',
+          description: data.product_name,
+          order_id: data.razorpay_order_id,
+          prefill: {
+            name: data.customer_name,
+            email: data.customer_email,
+            contact: data.customer_phone
+          },
+          theme: { color: '#16a34a' },
+          handler: function (response) {
+            document.getElementById('razorpay_order_id').value   = response.razorpay_order_id;
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('razorpay_signature').value  = response.razorpay_signature;
+            paymentDone = true;
+            purchaseForm.submit();
+          },
+          modal: {
+            ondismiss: function () {
+              placeOrderBtn.disabled = false;
+              placeOrderBtn.innerHTML = '<i class="bi bi-bag-check me-2"></i>Place Order';
+            }
+          }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.on('payment.failed', function () {
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.innerHTML = '<i class="bi bi-bag-check me-2"></i>Place Order';
+        });
+        rzp.open();
+      })
+      .catch(function () {
+        alert('Something went wrong while starting the payment. Please try again.');
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.innerHTML = '<i class="bi bi-bag-check me-2"></i>Place Order';
+      });
   });
 }
 </script>

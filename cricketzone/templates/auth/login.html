@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Login – CricketZone{% endblock %}
+
+{% block content %}
+<div class="page-hero-mini">
+  <div class="container-fluid px-4 px-lg-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb cz-breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li class="breadcrumb-item active">Login</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="container-fluid px-4 px-lg-5 py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-xl-4">
+      <div class="purchase-card">
+        <div class="purchase-header">
+          <h4 class="mb-0"><i class="bi bi-box-arrow-in-right me-2"></i>Login to CricketZone</h4>
+        </div>
+
+        <form method="POST" class="purchase-form" novalidate>
+          <div class="px-4 py-4">
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control cz-input"
+                     placeholder="your@gmail.com" required autofocus />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control cz-input"
+                     placeholder="Your password" required />
+            </div>
+
+            {% if unverified_email %}
+              <div class="alert alert-warning small">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Didn't get the email?
+                <a href="{{ url_for('auth.resend_verification', email=unverified_email) }}">Resend verification email</a>
+              </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-place-order w-100 mt-2">
+              <i class="bi bi-box-arrow-in-right me-2"></i>Login
+            </button>
+
+            <hr class="my-3" />
+
+            <p class="text-center small mb-1">
+              New to CricketZone?
+              <a href="{{ url_for('auth.signup') }}" class="fw-semibold">Create an account</a>
+            </p>
+            <p class="text-center small mb-0">
+              <a href="{{ url_for('auth.resend_verification') }}">Resend verification email</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -37,12 +37,14 @@ def create_app():
     from cricketzone.routes.orders   import orders_bp
     from cricketzone.routes.contact  import contact_bp
     from cricketzone.routes.admin    import admin_bp
+    from cricketzone.routes.auth     import auth_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(products_bp)
     app.register_blueprint(orders_bp)
     app.register_blueprint(contact_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(auth_bp)
 
     # Init DB
     from cricketzone.database import init_db, close_db

@@ -37,6 +37,27 @@ def execute_db(sql, args=()):
     return cur.lastrowid
 
 
+def _column_exists(db, table, column):
+    """Check if a column already exists on a table (used for safe migrations)."""
+    cols = [row["name"] for row in db.execute(f"PRAGMA table_info({table})").fetchall()]
+    return column in cols
+
+
+def _migrate_orders_payment_columns(db):
+    """Adds Razorpay payment columns + user_id to an EXISTING orders table
+    without touching/deleting any current data."""
+    new_columns = [
+        ("razorpay_order_id",   "TEXT"),
+        ("razorpay_payment_id", "TEXT"),
+        ("payment_status",      "TEXT DEFAULT 'Pending'"),
+        ("user_id",             "INTEGER"),
+    ]
+    for col_name, col_type in new_columns:
+        if not _column_exists(db, "orders", col_name):
+            db.execute(f"ALTER TABLE orders ADD COLUMN {col_name} {col_type}")
+    db.commit()
+
+
 def init_db():
     from cricketzone.models import seed_products
 
@@ -58,18 +79,34 @@ def init_db():
             created_at  TEXT    DEFAULT (datetime('now'))
         );
 
+        CREATE TABLE IF NOT EXISTS users (
+            id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+            full_name            TEXT    NOT NULL,
+            email                TEXT    NOT NULL UNIQUE,
+            phone                TEXT,
+            password_hash        TEXT    NOT NULL,
+            is_verified          INTEGER NOT NULL DEFAULT 0,
+            verification_token   TEXT,
+            token_created_at     TEXT,
+            created_at           TEXT    DEFAULT (datetime('now'))
+        );
+
         CREATE TABLE IF NOT EXISTS orders (
-            id             INTEGER PRIMARY KEY AUTOINCREMENT,
-            order_id       TEXT    NOT NULL UNIQUE,
-            customer_name  TEXT    NOT NULL,
-            customer_email TEXT    NOT NULL,
-            customer_phone TEXT,
-            product_id     INTEGER NOT NULL REFERENCES products(id),
-            quantity       INTEGER NOT NULL DEFAULT 1,
-            total_price    REAL    NOT NULL,
-            address        TEXT    NOT NULL,
-            status         TEXT    NOT NULL DEFAULT 'Confirmed',
-            created_at     TEXT    DEFAULT (datetime('now'))
+            id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_id             TEXT    NOT NULL UNIQUE,
+            customer_name        TEXT    NOT NULL,
+            customer_email       TEXT    NOT NULL,
+            customer_phone       TEXT,
+            product_id           INTEGER NOT NULL REFERENCES products(id),
+            quantity             INTEGER NOT NULL DEFAULT 1,
+            total_price          REAL    NOT NULL,
+            address              TEXT    NOT NULL,
+            status               TEXT    NOT NULL DEFAULT 'Confirmed',
+            razorpay_order_id    TEXT,
+            razorpay_payment_id  TEXT,
+            payment_status       TEXT    DEFAULT 'Pending',
+            user_id              INTEGER REFERENCES users(id),
+            created_at           TEXT    DEFAULT (datetime('now'))
         );
 
         CREATE TABLE IF NOT EXISTS contact_messages (
@@ -89,6 +126,9 @@ def init_db():
         );
     """)
     db.commit()
+
+    # Safe migrations for databases created before these columns existed.
+    _migrate_orders_payment_columns(db)
 
     count = db.execute("SELECT COUNT(*) FROM products").fetchone()[0]
     if count == 0:

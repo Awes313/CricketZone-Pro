@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  body { margin:0; padding:0; background:#f4f6f9; font-family:'Segoe UI',Arial,sans-serif; color:#333; }
+  .wrap { max-width:520px; margin:30px auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,.08); }
+  .header { background:linear-gradient(135deg,#1a6b3c,#2d9d5f); padding:36px 40px; text-align:center; }
+  .icon   { width:64px; height:64px; background:rgba(255,255,255,.2); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:28px; color:#fff; margin-bottom:16px; }
+  .header h1 { color:#fff; margin:0; font-size:24px; }
+  .header p  { color:rgba(255,255,255,.85); margin:6px 0 0; font-size:14px; }
+  .body { padding:36px 40px; }
+  .btn-verify { display:inline-block; background:#16a34a; color:#fff !important; padding:14px 36px; border-radius:8px; text-decoration:none; font-weight:700; font-size:15px; margin:22px 0; }
+  .link-fallback { background:#f0fdf4; border:1px solid #dcfce7; border-radius:8px; padding:12px 16px; font-size:12px; color:#15803d; word-break:break-all; margin-top:16px; }
+  .footer { background:#f8f9fa; padding:20px 40px; text-align:center; border-top:1px solid #eee; }
+  .footer p { color:#999; font-size:12px; margin:3px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="icon">&#9993;</div>
+    <h1>Verify Your Email</h1>
+    <p>One more step to activate your CricketZone account</p>
+  </div>
+
+  <div class="body">
+    <p style="font-size:16px;">Hi <strong>{{ full_name }}</strong>,</p>
+    <p style="color:#555; line-height:1.6;">
+      Thanks for signing up with CricketZone! Please confirm your email address to
+      activate your account and start shopping for premium cricket equipment.
+    </p>
+
+    <div style="text-align:center;">
+      <a href="{{ verification_url }}" class="btn-verify">Verify My Email</a>
+    </div>
+
+    <p style="font-size:13px; color:#666;">
+      This link will expire in 24 hours. If you didn't create a CricketZone account,
+      you can safely ignore this email.
+    </p>
+
+    <div class="link-fallback">
+      If the button doesn't work, copy and paste this link into your browser:<br>
+      {{ verification_url }}
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>CricketZone</strong> – Premium Cricket Equipment</p>
+    <p>Sunni Chowk, Main Road, Hangal – 581104, Karnataka</p>
+    <p>mohamed7777awes@gmail.com | +91 91488 90802</p>
+  </div>
+
+</div>
+</body>
+</html>
