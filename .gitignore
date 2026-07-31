@@ -1,23 +1,42 @@
-# Secrets
+# Environment
 .env
 
 # Database
 instance/
 *.db
+*.sqlite
+*.sqlite3
+
+# Virtual Environment
+venv/
+env/
+.venv/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
-venv/
-env/
-.venv/
+
+# Build
+build/
+dist/
 *.egg-info/
 
-# IDE
+# VS Code / PyCharm
 .vscode/
 .idea/
+
+# OS Files
 .DS_Store
+Thumbs.db
 
 # Logs
 *.log
+
+# Test Files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Process Files
+*.pid
