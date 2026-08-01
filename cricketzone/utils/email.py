@@ -56,7 +56,8 @@ def send_verification_email(user: dict, verification_url: str) -> bool:
         print("MAIL_SERVER:", current_app.config["MAIL_SERVER"])
         print("MAIL_PORT:", current_app.config["MAIL_PORT"])
         print("MAIL_TLS:", current_app.config["MAIL_USE_TLS"])
-
+        print("MAIL_PASSWORD EMPTY:", not bool(current_app.config["MAIL_PASSWORD"]))
+        
         mail.send(msg)
 
         logger.info("Verification email sent to %s", user["email"])
