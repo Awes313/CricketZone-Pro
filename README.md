@@ -34,14 +34,6 @@ A Modern Full-Stack Cricket Equipment E-Commerce Platform built with Flask, SQLA
 
 ---
 
-# 🌐 Live Demo
-
-**Live Website**
-
-> https://YOUR-PYTHONANYWHERE-LINK.pythonanywhere.com
-
----
-
 # ✨ Key Highlights
 
 - 🏏 Premium Cricket Equipment Store
