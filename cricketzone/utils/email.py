@@ -57,7 +57,7 @@ def send_verification_email(user: dict, verification_url: str) -> bool:
         print("MAIL_PORT:", current_app.config["MAIL_PORT"])
         print("MAIL_TLS:", current_app.config["MAIL_USE_TLS"])
         print("MAIL_PASSWORD EMPTY:", not bool(current_app.config["MAIL_PASSWORD"]))
-        
+
         mail.send(msg)
 
         logger.info("Verification email sent to %s", user["email"])
@@ -65,5 +65,8 @@ def send_verification_email(user: dict, verification_url: str) -> bool:
 
     except Exception as exc:
         logger.exception("Verification email failed")
-        print(f"EMAIL ERROR: {repr(exc)}")
+        import traceback
+
+        print("EMAIL ERROR:", repr(exc))
+        traceback.print_exc()
         return False
